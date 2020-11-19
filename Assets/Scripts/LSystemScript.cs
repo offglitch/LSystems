@@ -14,9 +14,10 @@ public class TransformInfo
 
 public class LSystemScript : MonoBehaviour
 {
-    [SerializeField] private GameObject Branch;
-    [SerializeField] private float length = 10f;
-    [SerializeField] private float angle = 30f;
+    [SerializeField] public int iterations;
+    [SerializeField] public GameObject Branch;
+    [SerializeField] public float length;
+    [SerializeField] public float angle;
 
     // Starting point of the tree, will always begin with a rule
     private const string axiom = "X";
@@ -33,7 +34,7 @@ public class LSystemScript : MonoBehaviour
 
         rules = new Dictionary<char, string>
         {
-            {'X', "[FX][-FX][+FX]" },
+            {'X', "F[+X][-X]FX" },
             {'F', "FF" }
         };
 
@@ -51,27 +52,38 @@ public class LSystemScript : MonoBehaviour
         StringBuilder sb = new StringBuilder();
         Debug.Log("Before the 1st iteration sb: " + sb + "\n");
 
-        foreach (char c in currentString)
+        for(int i = 0; i < iterations; i++)
         {
-            // If the character being read is a key in the dict, add the value from that key to the string builder
-            // If it doesn't, add the character itself to the string builder
-            // NOTE: Use ternirary operator
-            Debug.Log("The current character being read is: " + c + "\n");
-            //sb.Append(rules.ContainsKey(c) ? rules[c] : c.ToString());
+            foreach (char c in currentString)
+            {
+                // If the character being read is a key in the dict, add the value from that key to the string builder
+                // If it doesn't, add the character itself to the string builder
+                // NOTE: Use ternirary operator
+                Debug.Log("The current character being read is: " + c + "\n");
 
-            if (rules.ContainsKey(c))
-            {
-                sb.Append(rules[c]);
-                Debug.Log("Character is a key in the rule set and has been added: \n");
-            } else
-            {
-                sb.Append(c.ToString());
-                Debug.Log("Character not recognized in rule set: " + sb + "\n");
+                sb.Append(rules.ContainsKey(c) ? rules[c] : c.ToString());
+
+                Debug.Log("(String after iteration #" + i + " is:" + sb + "\n");
+
+                /*
+                if (rules.ContainsKey(c))
+                {
+                    sb.Append(rules[c]);
+                    Debug.Log("Character is a key in the rule set and has been added: \n");
+                }
+                else
+                {
+                    sb.Append(c.ToString());
+                    Debug.Log("Character not recognized in rule set: " + sb + "\n");
+                }
+                */
             }
+
+            currentString = sb.ToString();
+            sb = new StringBuilder();
         }
 
-        currentString = sb.ToString();
-        Debug.Log("After the 1st iteration sb: " + sb + "\n");
+
 
         // New set of instructions
         foreach (char c in currentString)
@@ -93,11 +105,11 @@ public class LSystemScript : MonoBehaviour
                     break;
 
                 case '+':       // Rotates tree spawner clockwise
-                    transform.Rotate(Vector3.back * angle);
+                    transform.Rotate(Vector3.forward * angle);
                     break;
 
                 case '-':       // Rotates tree spawner anti-clockwise
-                    transform.Rotate(Vector3.forward * angle);
+                    transform.Rotate(Vector3.back * angle);
                     break;
 
                 case '[':       // Saves current transform info
