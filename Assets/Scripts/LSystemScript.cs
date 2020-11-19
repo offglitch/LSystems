@@ -37,8 +37,6 @@ public class LSystemScript : MonoBehaviour
             {'F', "FF" }
         };
 
-        Debug.Log("The rule set is: " + rules + "\n");
-
         Spawn();
     }
 
@@ -64,7 +62,7 @@ public class LSystemScript : MonoBehaviour
             if (rules.ContainsKey(c))
             {
                 sb.Append(rules[c]);
-                Debug.Log("Character is a key in the rule set and has been added: " + rules + "\n");
+                Debug.Log("Character is a key in the rule set and has been added: \n");
             } else
             {
                 sb.Append(c.ToString());
