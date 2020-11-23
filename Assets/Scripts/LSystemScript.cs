@@ -14,13 +14,23 @@ public class TransformInfo
 
 public class LSystemScript : MonoBehaviour
 {
-    [SerializeField] public int iterations;
-    [SerializeField] public GameObject Branch;
-    [SerializeField] public float length;
-    [SerializeField] public float angle;
-
+    private int iterations;
+    [HideInInspector]
+    public float length = 5;
+    public float angle;
     // Starting point of the tree, will always begin with a rule
-    private const string axiom = "X";
+    private string axiom;
+
+    public GameObject branch;
+    public GameObject leaf;
+    public GameObject treeParent;
+
+    private List<GameObject> branches;
+
+
+
+    private Vector3 initialTransform;
+    private Quaternion initialRotation;
 
     // Grammar: take a string, perform operation based on each character of the string
     // Repeat the sequence for each iteration
@@ -28,17 +38,38 @@ public class LSystemScript : MonoBehaviour
     private Dictionary<char, string> rules;
     private string currentString = string.Empty;
 
+    private int lsystemNum = 0;
+
     void Start()
     {
+        initialTransform = transform.position;
+        initialRotation = transform.rotation;
+
         transformStack = new Stack<TransformInfo>();
 
-        rules = new Dictionary<char, string>
-        {
-            {'X', "F[+X][-X]FX" },
-            {'F', "FF" }
-        };
+        branches = new List<GameObject>();
 
         Spawn();
+    }
+
+    public void Update()
+    {
+
+        if (Input.GetKeyDown(KeyCode.RightArrow) && lsystemNum <= 7)
+        {
+            lsystemNum++;
+            DeleteElements();
+            ChangeLsystemtree();
+            Spawn();
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && lsystemNum >= 0)
+        {
+            lsystemNum--;
+            DeleteElements();
+            ChangeLsystemtree();
+            Spawn();
+        }
+
     }
 
     /*
@@ -46,42 +77,33 @@ public class LSystemScript : MonoBehaviour
     */
     private void Spawn()
     {
-        // Current starting point rule
-        currentString = axiom;
 
-        StringBuilder sb = new StringBuilder();
-        Debug.Log("Before the 1st iteration sb: " + sb + "\n");
-
-        for(int i = 0; i < iterations; i++)
+        if (rules != null)
         {
-            foreach (char c in currentString)
+            // Current starting point rule
+            currentString = axiom;
+
+            StringBuilder sb = new StringBuilder();
+            // Debug.Log("Before the 1st iteration sb: " + sb + "\n");
+
+            for (int i = 0; i < iterations; i++)
             {
-                // If the character being read is a key in the dict, add the value from that key to the string builder
-                // If it doesn't, add the character itself to the string builder
-                // NOTE: Use ternirary operator
-                Debug.Log("The current character being read is: " + c + "\n");
-
-                sb.Append(rules.ContainsKey(c) ? rules[c] : c.ToString());
-
-                Debug.Log("(String after iteration #" + i + " is:" + sb + "\n");
-
-                /*
-                if (rules.ContainsKey(c))
+                foreach (char c in currentString)
                 {
-                    sb.Append(rules[c]);
-                    Debug.Log("Character is a key in the rule set and has been added: \n");
+                    // If the character being read is a key in the dict, add the value from that key to the string builder
+                    // If it doesn't, add the character itself to the string builder
+                    // NOTE: Use ternirary operator
+                    // Debug.Log("The current character being read is: " + c + "\n");
+
+                    sb.Append(rules.ContainsKey(c) ? rules[c] : c.ToString());
+
                 }
-                else
-                {
-                    sb.Append(c.ToString());
-                    Debug.Log("Character not recognized in rule set: " + sb + "\n");
-                }
-                */
+
+                currentString = sb.ToString();
+                sb = new StringBuilder();
             }
-
-            currentString = sb.ToString();
-            sb = new StringBuilder();
         }
+
 
 
 
@@ -90,15 +112,15 @@ public class LSystemScript : MonoBehaviour
         {
             switch (c)
             {
-                
+
                 case 'F':       // Draws straight line
                     Vector3 initialPosition = transform.position;       // Initial position is equal to the position of the tree spawner
                     transform.Translate(Vector3.up * length);
 
-                    GameObject treeSegment = Instantiate(Branch);       // Referencing the branch and instatiating it then setting the line renderer values to draw
+                    GameObject treeSegment = Instantiate(branch);       // Referencing the branch and instatiating it then setting the line renderer values to draw
                     treeSegment.GetComponent<LineRenderer>().SetPosition(0, initialPosition);
                     treeSegment.GetComponent<LineRenderer>().SetPosition(1, transform.position);
-
+                    branches.Add(treeSegment);
                     break;
 
                 case 'X':       // Generates more F's
@@ -132,4 +154,141 @@ public class LSystemScript : MonoBehaviour
         }
     }
 
+    private void DeleteElements()
+    {
+        foreach (GameObject b in branches)
+        {
+            Destroy(b);
+        }
+    }
+
+    private void ResetTransform()
+    {
+        transform.position = initialTransform;
+        transform.rotation = initialRotation;
+    }
+
+    private void ChangeLsystemtree()
+    {
+        ResetTransform();
+        switch (lsystemNum)
+        {
+            case 1:
+                TreeOne();
+                break;
+            case 2:
+                TreeTwo();
+                break;
+            case 3:
+                TreeThree();
+                break;
+            case 4:
+                TreeFour();
+                break;
+            case 5:
+                TreeFive();
+                break;
+            case 6:
+                TreeSix();
+                break;
+            case 7:
+                TreeSeven();
+                break;
+        }
+    }
+
+    private void TreeOne()
+    {
+        axiom = "X";
+        angle = 20f;
+        iterations = 7;
+
+        rules = new Dictionary<char, string>
+        {
+            {'X', "F[+X]F[-X]+X" },
+            {'F', "FF" }
+        };
+
+    }
+
+    private void TreeTwo()
+    {
+        axiom = "X";
+        angle = 25.7f;
+        iterations = 7;
+
+        rules = new Dictionary<char, string>
+        {
+            {'X', "F[+X][-X]FX" },
+            {'F', "FF" }
+        };
+
+    }
+
+    private void TreeThree()
+    {
+        axiom = "X";
+        angle = 22.5f;
+        iterations = 5;
+
+        rules = new Dictionary<char, string>
+        {
+            {'X', "F-[[X]+X]+F[+FX]-X" },
+            {'F', "FF" }
+        };
+
+    }
+
+    private void TreeFour()
+    {
+        axiom = "F";
+        angle = 22.5f;
+        iterations = 4;
+
+        rules = new Dictionary<char, string>
+        {
+            {'F', "FF-[-F+F+F]+[+F-F-F]" }
+        };
+
+    }
+
+    private void TreeFive()
+    {
+        axiom = "F";
+        angle = 20f;
+        iterations = 5;
+
+        rules = new Dictionary<char, string>
+        {
+            {'F', "F[+F]F[-F][F]" }
+        };
+
+    }
+
+    private void TreeSix()
+    {
+        axiom = "F";
+        angle = 22.5f;
+        iterations = 5;
+
+        rules = new Dictionary<char, string>
+        {
+            {'F', "F[+F]F[-F]F" }
+        };
+
+    }
+
+    private void TreeSeven()
+    {
+        axiom = "X";
+        angle = 20f;
+        iterations = 7;
+
+        rules = new Dictionary<char, string>
+        {
+            {'X', "F[+X]F[-X]+X" },
+            {'F', "FF" }
+        };
+
+    }
 }
