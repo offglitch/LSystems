@@ -14,9 +14,9 @@ public class TransformInfo
 
 public class LSystemScript : MonoBehaviour
 {
-    private int iterations;
-    [HideInInspector]
-    public float length = 5;
+    public int iterations;
+    //[HideInInspector]
+    public float length = 20;
     public float angle;
     // Starting point of the tree, will always begin with a rule
     private string axiom;
@@ -54,8 +54,50 @@ public class LSystemScript : MonoBehaviour
 
     public void Update()
     {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            this.iterations++;
+            Spawn();
+        }
+        else if (Input.GetKeyDown(KeyCode.B) && iterations != 0)
+        {
+            this.iterations--;
+            DeleteElements();
+            ResetTransform();
+            Spawn();
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            this.angle++;
+            DeleteElements();
+            ResetTransform();
+            Spawn();
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) && lsystemNum <= 7)
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            this.angle--;
+            DeleteElements();
+            ResetTransform();
+            Spawn();
+
+        }
+        else if (Input.GetKey(KeyCode.W))
+        {
+            this.length++;
+            DeleteElements();
+            ResetTransform();
+            Spawn();
+
+        }
+        else if (Input.GetKey(KeyCode.S) && length != 0)
+        {
+            this.length--;
+            DeleteElements();
+            ResetTransform();
+            Spawn();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && lsystemNum <= 7)
         {
             lsystemNum++;
             DeleteElements();
@@ -69,6 +111,12 @@ public class LSystemScript : MonoBehaviour
             ChangeLsystemtree();
             Spawn();
         }
+
+        UIMenu.iterations = iterations.ToString();
+        UIMenu.angleText = angle;
+        UIMenu.lengthText = length;
+        UIMenu.axiom = axiom;
+        UIMenu.lsystemNumText = lsystemNum;
 
     }
 
@@ -127,11 +175,11 @@ public class LSystemScript : MonoBehaviour
                     break;
 
                 case '+':       // Rotates tree spawner clockwise
-                    transform.Rotate(Vector3.forward * angle);
+                    transform.Rotate(Vector3.back * angle);
                     break;
 
                 case '-':       // Rotates tree spawner anti-clockwise
-                    transform.Rotate(Vector3.back * angle);
+                    transform.Rotate(Vector3.forward * angle);
                     break;
 
                 case '[':       // Saves current transform info
@@ -162,11 +210,7 @@ public class LSystemScript : MonoBehaviour
         }
     }
 
-    private void ResetTransform()
-    {
-        transform.position = initialTransform;
-        transform.rotation = initialRotation;
-    }
+
 
     private void ChangeLsystemtree()
     {
@@ -195,6 +239,12 @@ public class LSystemScript : MonoBehaviour
                 TreeSeven();
                 break;
         }
+    }
+
+    private void ResetTransform()
+    {
+        transform.position = initialTransform;
+        transform.rotation = initialRotation;
     }
 
     private void TreeOne()
