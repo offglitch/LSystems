@@ -14,10 +14,10 @@ public class TransformInfo
 
 public class LSystemScript : MonoBehaviour
 {
-    public int iterations;
+    private int iterations;
     //[HideInInspector]
-    public float length = 20;
-    public float angle;
+    private float length;
+    private float angle;
     // Starting point of the tree, will always begin with a rule
     private string axiom;
 
@@ -54,12 +54,12 @@ public class LSystemScript : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             this.iterations++;
             Spawn();
         }
-        else if (Input.GetKeyDown(KeyCode.B) && iterations != 0)
+        else if (Input.GetKeyDown(KeyCode.E) && iterations != 0)
         {
             this.iterations--;
             DeleteElements();
@@ -112,12 +112,26 @@ public class LSystemScript : MonoBehaviour
             Spawn();
         }
 
+
+
         UIMenu.iterations = iterations.ToString();
         UIMenu.angleText = angle;
         UIMenu.lengthText = length;
         UIMenu.axiom = axiom;
         UIMenu.lsystemNumText = lsystemNum;
-
+        UIMenu.rule2Text = "";
+        UIMenu.rule1Text = "";
+        foreach (KeyValuePair<char, string> rule in rules)
+        {
+            if (rule.Key == 'X')
+            {
+                UIMenu.rule1Text = rule.Value;
+            }
+            else if (rule.Key == 'F')
+            {
+                UIMenu.rule2Text = rule.Value;
+            }
+        }
     }
 
     /*
@@ -252,6 +266,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "X";
         angle = 20f;
         iterations = 7;
+        length = 1;
 
         rules = new Dictionary<char, string>
         {
@@ -266,6 +281,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "X";
         angle = 25.7f;
         iterations = 7;
+        length = 1;
 
         rules = new Dictionary<char, string>
         {
@@ -280,6 +296,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "X";
         angle = 22.5f;
         iterations = 5;
+        length = 3;
 
         rules = new Dictionary<char, string>
         {
@@ -294,6 +311,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "F";
         angle = 22.5f;
         iterations = 4;
+        length = 4; 
 
         rules = new Dictionary<char, string>
         {
@@ -307,6 +325,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "F";
         angle = 20f;
         iterations = 5;
+        length = 4;
 
         rules = new Dictionary<char, string>
         {
@@ -320,6 +339,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "F";
         angle = 22.5f;
         iterations = 5;
+        length = 1;
 
         rules = new Dictionary<char, string>
         {
@@ -333,6 +353,7 @@ public class LSystemScript : MonoBehaviour
         axiom = "X";
         angle = 20f;
         iterations = 7;
+        length = 1;
 
         rules = new Dictionary<char, string>
         {

@@ -10,8 +10,9 @@ public class UIMenu : MonoBehaviour
      Getters and setters for the UI text boxes
      */
 
-    public Text rule1UI, rule2UI, iterationsUI, axiomUI, lsystemUI;
+    public Text iterationsUI, axiomUI, lsystemUI;
     public Text angleUI, lengthUI;
+    public Text rule1UI, rule2UI;
 
     public static int lsystemNumText;
     public static string axiom;
