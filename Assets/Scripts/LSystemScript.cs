@@ -97,14 +97,14 @@ public class LSystemScript : MonoBehaviour
             ResetTransform();
             Spawn();
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && lsystemNum <= 7)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && lsystemNum <= 11)
         {
             lsystemNum++;
             DeleteElements();
             ChangeLsystemtree();
             Spawn();
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && lsystemNum >= 0)
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && lsystemNum > 0)
         {
             lsystemNum--;
             DeleteElements();
@@ -249,8 +249,11 @@ public class LSystemScript : MonoBehaviour
             case 6:
                 TreeSix();
                 break;
-            case 7:
-                TreeSeven();
+            case 8:
+                TreeEight();
+                break;
+            case 9:
+                TreeNine();
                 break;
         }
     }
@@ -350,6 +353,50 @@ public class LSystemScript : MonoBehaviour
 
     private void TreeSeven()
     {
+        axiom = "F";
+        angle = 90f;
+        iterations = 1;
+        length = 1;
+
+        rules = new Dictionary<char, string>
+        {
+            {'F', "-F++F-" }
+        };
+
+    }
+
+    private void TreeEight()
+    {
+        axiom = "X";
+        angle = 20f;
+        iterations = 4;
+        length = 2;
+
+        rules = new Dictionary<char, string>
+        {
+            {'X', "[F-[[X]+X]+F[-FX]+X]" },
+            {'F', "FF" }
+        };
+
+    }
+
+    private void TreeNine()
+    {
+        axiom = "X";
+        angle = 20f;
+        iterations = 4;
+        length = 2;
+
+        rules = new Dictionary<char, string>
+        {
+            {'X', "[FF[+XF-F+FX]--F+F-FX]" },
+            {'F', "FF" }
+        };
+
+    }
+
+    private void TreeTwelve()
+    {
         axiom = "X";
         angle = 20f;
         iterations = 7;
@@ -362,4 +409,5 @@ public class LSystemScript : MonoBehaviour
         };
 
     }
+
 }
