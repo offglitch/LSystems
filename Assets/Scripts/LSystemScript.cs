@@ -14,6 +14,7 @@ public class TransformInfo
 
 public class LSystemScript : MonoBehaviour
 {
+
     private int iterations;
     //[HideInInspector]
     private float length;
@@ -27,7 +28,7 @@ public class LSystemScript : MonoBehaviour
 
     private List<GameObject> branches;
 
-
+    //private List<GameObject> leaves;
 
     private Vector3 initialTransform;
     private Quaternion initialRotation;
@@ -48,7 +49,7 @@ public class LSystemScript : MonoBehaviour
         transformStack = new Stack<TransformInfo>();
 
         branches = new List<GameObject>();
-
+        //leaves = new List<GameObject>();
         Spawn();
     }
 
@@ -206,10 +207,18 @@ public class LSystemScript : MonoBehaviour
 
                 case ']':       // Returns to previously saved transform info 
                     TransformInfo ti = transformStack.Pop();
+
                     transform.position = ti.position;
                     transform.rotation = ti.rotation;
+                    //GameObject leafInstance = Instantiate(leaf);
+                    //leaves.Add(leafInstance);
                     break;
-
+                case '&':
+                    transform.Rotate(Vector3.left * angle);
+                    break;
+                case '/':
+                    transform.Rotate(Vector3.right * angle);
+                    break;
                 default:
                     throw new InvalidOperationException("Invalid L-Tree operation");
             }
@@ -249,11 +258,17 @@ public class LSystemScript : MonoBehaviour
             case 6:
                 TreeSix();
                 break;
+            case 7:
+                TreeSeven();
+                break;
             case 8:
                 TreeEight();
                 break;
             case 9:
                 TreeNine();
+                break;
+            case 10:
+                TreeTwelve();
                 break;
         }
     }
@@ -355,12 +370,12 @@ public class LSystemScript : MonoBehaviour
     {
         axiom = "F";
         angle = 90f;
-        iterations = 1;
-        length = 1;
+        iterations = 4;
+        length = 4;
 
         rules = new Dictionary<char, string>
         {
-            {'F', "-F++F-" }
+            {'F', "FF+F+++F+F" }
         };
 
     }
@@ -368,13 +383,13 @@ public class LSystemScript : MonoBehaviour
     private void TreeEight()
     {
         axiom = "X";
-        angle = 20f;
-        iterations = 4;
-        length = 2;
+        angle = 30f;
+        iterations = 3;
+        length = 10;
 
         rules = new Dictionary<char, string>
         {
-            {'X', "[F-[[X]+X]+F[-FX]+X]" },
+            {'X', "F[-F-F][+F-F][&F-F][/F-F]X" },
             {'F', "FF" }
         };
 
@@ -385,11 +400,11 @@ public class LSystemScript : MonoBehaviour
         axiom = "X";
         angle = 20f;
         iterations = 4;
-        length = 2;
+        length = 7;
 
         rules = new Dictionary<char, string>
         {
-            {'X', "[FF[+XF-F+FX]--F+F-FX]" },
+            {'X', "F[[/FX][-FF]+F&F][&FX][-F]X" },
             {'F', "FF" }
         };
 
@@ -398,13 +413,13 @@ public class LSystemScript : MonoBehaviour
     private void TreeTwelve()
     {
         axiom = "X";
-        angle = 20f;
-        iterations = 7;
-        length = 1;
+        angle = 30f;
+        iterations = 3;
+        length = 5;
 
         rules = new Dictionary<char, string>
         {
-            {'X', "F[+X]F[-X]+X" },
+            {'X', "FF[+F&F]X[-FX[&F[+F]X]X]X" },
             {'F', "FF" }
         };
 
